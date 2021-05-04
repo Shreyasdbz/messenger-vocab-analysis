@@ -1,8 +1,6 @@
 import os
 import json
 from Person import Person
-from Message import Message
-
 
                  
 #==================================================================================== 
@@ -11,18 +9,29 @@ from Message import Message
 # Output Pass/Fail , filtered content
 #==================================================================================== 
 def filterMessageContent(sender, content):
-    filterPass = True
-    return filterPass
+    if(content == None):
+        return False
+    if(content == ""):
+        return False
+    if(sender == None):
+        return False
+    if(sender == ""):
+        return False
+    if("facebook" in sender.lower()):
+        return False
+    if("other" in sender.lower()):
+        return False
+    if("http" in content.lower()):
+        return False
+    return True
 
 
 #==================================================================================== 
 # Addes the sender to the peoplelist if not there already                         
 #==================================================================================== 
 def handleMesage(sender, content, peopleList_input, addedPeople_input):
-    
     peopleList = peopleList_input
     addedPeople = addedPeople_input
-    
     if sender in addedPeople:
         for p in peopleList:
             if(p.name == sender):
@@ -30,7 +39,6 @@ def handleMesage(sender, content, peopleList_input, addedPeople_input):
     else:
         addedPeople.append(sender)
         peopleList.append(Person(sender))
-   
     return peopleList, addedPeople
 
 
@@ -42,11 +50,10 @@ def handleMesage(sender, content, peopleList_input, addedPeople_input):
 # Output: peopleList <type: Person>
 #==================================================================================== 
 #==================================================================================== 
-def doParsing(self):
+def doParsing():
     
     peopleList = []
     addedPeople = []
-    messageList = []
     
     #-----------------------------------------------------------------------
     # Get all the conversation history files
@@ -69,7 +76,7 @@ def doParsing(self):
             # Read messages
             for message in data['messages']:
                 sender = None
-                content = ""
+                content = None
                 
                 for msgData in message:
                     if(msgData == "sender_name"):
@@ -81,5 +88,4 @@ def doParsing(self):
                     peopleList, addedPeople = handleMesage(sender, content, peopleList, addedPeople)
                     pass
                 
-                                    
-       
+    return peopleList

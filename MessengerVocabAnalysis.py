@@ -1,4 +1,4 @@
-from Person import Person
+from Parser import doParsing
 import math
 import numpy as np
 import matplotlib.pyplot as plt
@@ -12,28 +12,27 @@ testData = {"John": {"one":2, "nice":4, "wow":6, "keyboard":1, "computer":1, "ph
 
 
 # ------------------------------------------------------------
-# Empty people list
-# (Will contain Person objects)
+# Import and parse the data
 # ------------------------------------------------------------
+
 people = []
 
+people_raw = doParsing()
 
-# ------------------------------------------------------------
-# Parse the data
-# ------------------------------------------------------------
-for p in testData:
-    person = Person(p)
-    person.userDict = testData[p]
-    people.append(person)
-    
+for p in people_raw:
+    p.doTotals()
+    nameSplit = p.name.split(' ')
+    p.name = nameSplit[0]
+    if(p.totalWords > 0):
+        people.append(p)
+    else:
+        pass
 
 
 # ------------------------------------------------------------
 # Process the data for plotting
 # ------------------------------------------------------------
 
-for p in people:
-    p.doTotals()
 
 labels = np.array([])
 # Y Axis = Number of unique words
@@ -104,19 +103,26 @@ for p in range(len(labels)):
     pass
 
 
-# Softmax function to normalize deltas
-softmax_sum = 0
-for d in deltas:
-    softmax_sum += math.exp(d)
+for p in range(len(deltas)):
+    print("{} ; {}".format(labels[p], deltas[p]))
 
-# Calculate final variances
-for d in range(len(deltas)):
-    variance = math.exp(deltas[d])/softmax_sum
-    if(deltas[d] >= 0):
-        variance *= 100
-    else:
-        variance *= -100
-    print("{} : {}".format(labels[d], variance))
+
+# Softmax function to normalize deltas
+# softmax_sum = 0
+# for d in range(len(deltas)):
+#     # print(labels[d], deltas[d], softmax_sum)
+#     softmax_sum += math.exp(deltas[d])
+
+# # Calculate final variances
+# for d in range(len(deltas)):
+#     variance = math.exp(deltas[d])/softmax_sum
+#     if(deltas[d] >= 0):
+#         variance *= 1
+#     else:
+#         variance *= -1
+#     print("{} : {}".format(labels[d], variance))
+
+
 
 # Show the plot
 plt.show()
